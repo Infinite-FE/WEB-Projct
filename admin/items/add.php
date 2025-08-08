@@ -1,33 +1,38 @@
 <?php
 require_once __DIR__ . '/../../config/db.php';
 
+// Validate inputs
 $category_id = $_POST['category_id'] ?? null;
-$title = $_POST['title'] ?? '';
-$description = $_POST['description'] ?? '';
-$image_path = $_POST['image_path'] ?? '';
-$file_id = $_POST['file_id'] ?? null;
-
-// Convert empty or 'null' string to real NULL
-if ($file_id === '' || $file_id === 'null') {
-    $file_id = null;
-}
+$title = $_POST['title'] ?? null;
+$description = $_POST['description'] ?? null;
 
 if (!$category_id || !$title) {
-    http_response_code(400);
-    echo json_encode(["error" => "Category and title are required"]);
+    echo json_encode(["error" => "Missing required fields"]);
     exit;
 }
 
 try {
-    $stmt = $pdo->prepare("
-        INSERT INTO items (category_id, title, description, image_path, file_id)
-        VALUES (?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([$category_id, $title, $description, $image_path, $file_id]);
+    // 1. Create the item
+    $stmt = $pdo->prepare("INSERT INTO items (category_id, title, description) VALUES (?, ?, ?)");
+    $stmt->execute([$category_id, $title, $description]);
+    $item_id = $pdo->lastInsertId();
 
-    echo json_encode(["status" => "success", "message" => "Item added"]);
+    // 2. If file uploaded, store in files table
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $filename = $_FILES['file']['name'];
+        $filetype = $_FILES['file']['type'];
+        $filesize = $_FILES['file']['size'];
+        $filedata = file_get_contents($_FILES['file']['tmp_name']);
+
+        $stmt = $pdo->prepare("INSERT INTO files (item_id, filename, filetype, filesize, filedata) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$item_id, $filename, $filetype, $filesize, $filedata]);
+    }
+
+    echo json_encode(["status" => "success", "message" => "Item created successfully", "item_id" => $item_id]);
+
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database error"]);
+    echo json_encode(["error" => "Database error: " . $e->getMessage()]);
 }
 ?>
+<!-- admin/items/add.php -->
+<!-- This file handles the addition of new items in the admin panel. It can also handle file uploads associated with the item. using API -->

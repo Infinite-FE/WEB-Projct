@@ -16,8 +16,8 @@ $routes = [
     'GET:/get/categories'         => 'get/categories.php',
     'GET:/get/items'              => 'get/items.php',
     'GET:/get/files'              => 'get/files.php',
-    'GET:/get/file'               => 'get/file.php',
-    'GET:/get/last-file-id'       => 'get/last-file-id.php',
+    // 'GET:/get/file'               => 'get/file.php',
+    // 'GET:/get/last-file-id'       => 'get/last-file-id.php',
 
 
     // 🔐 Auth APIs
@@ -63,3 +63,5 @@ if (isset($routes[$routeKey])) {
     echo json_encode(["error" => "API route not found", "path" => $path]);
 }
 ?>
+<!-- index.php -->
+<!-- This is the main entry point for the API. It routes requests to the appropriate handlers based on the request method and path. -->

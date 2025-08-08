@@ -1,30 +1,24 @@
-// get/files.php
 <?php
-require_once __DIR__ . '/../config/db.php';
+    require_once __DIR__ . '/../config/db.php';
 
-$file_id = $_GET['id'] ?? null;
-if (!$file_id) {
-    http_response_code(400);
-    echo json_encode(["error" => "Missing file id"]);
-    exit;
-}
-
-try {
-    $stmt = $pdo->prepare("SELECT filename, filetype, filedata FROM files WHERE id = ?");
-    $stmt->execute([$file_id]);
-    $file = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$file) {
-        http_response_code(404);
-        echo json_encode(["error" => "File not found"]);
+    $item_id = $_GET['item_id'] ?? null;
+    if (!$item_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing item_id"]);
         exit;
     }
 
-    header("Content-Type: {$file['filetype']}");
-    header("Content-Disposition: attachment; filename=\"{$file['filename']}\"");
-    echo $file['filedata'];
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["error" => "Failed to fetch file."]);
-}
+    try {
+        $stmt = $pdo->prepare("SELECT id, filename, filetype, filesize, uploaded_at FROM files WHERE item_id = ?");
+        $stmt->execute([$item_id]);
+        $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(["status" => "success", "files" => $files]);
+
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(["error" => "Failed to fetch files"]);
+    }
 ?>
+<!-- get/files.php -->
+<!-- This file retrieves files associated with a specific item in the admin panel. using API -->
