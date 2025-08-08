@@ -13,6 +13,7 @@ File management (linked to items)
 Data is stored entirely in the database (files in longblob).
 
 ============================================================
+
 🔑 Authentication
 1. Register
 POST /index.php/auth/register
@@ -36,6 +37,7 @@ or
 {"error":"Email already exists"}
 
 ============================================================
+
 2. Login
 POST /index.php/auth/login
 
@@ -52,6 +54,7 @@ Example Response:
 Sets a session cookie for subsequent authenticated requests.
 
 ============================================================
+
 📂 Categories
 3. Add Category
 POST /index.php/admin/categories/add
@@ -64,6 +67,7 @@ Response:
 {"status":"success","message":"Category added"}
 
 ============================================================
+
 4. Get Categories
 GET /index.php/get/categories
 
@@ -76,6 +80,7 @@ Response:
 }
 
 ============================================================
+
 📦 Items
 5. Add Item (with or without file)
 POST /index.php/admin/items/add
@@ -96,6 +101,7 @@ Response:
 {"status":"success","message":"Item created successfully","item_id":"5"}
 
 ============================================================
+
 6. Get Items
 GET /index.php/get/items?category_id=ID
 
@@ -108,6 +114,7 @@ Response:
 }
 
 ============================================================
+
 7. Delete Item
 POST /index.php/admin/items/delete
 
@@ -122,6 +129,7 @@ Response:
 {"status":"success","message":"Item and associated files deleted"}
 
 ============================================================
+
 📁 Files
 8. Upload File (Attach to Item)
 POST /index.php/admin/files/upload
@@ -135,6 +143,7 @@ Response:
 {"status":"success","message":"File uploaded","file_id":"3"}
 
 ============================================================
+
 9. Get File (Download)
 GET /index.php/get/files?id=FILE_ID
 
